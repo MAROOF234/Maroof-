@@ -1,0 +1,18 @@
+{
+    "doctors": [
+        {
+            "id": "D17469757312096",
+            "username": "fit",
+            "email": "fit@gmail.com",
+            "password": "fit04",
+            "role": "doctor",
+            "department": "Orthopedics",
+            "specialization": "Orthopedicist",
+            "phone": "+251 000000000",
+            "gender": "Male",
+            "age": "55",
+            "address": "Bole",
+            "created_at": "2025-05-11 17:02:11"
+        }
+    ]
+}

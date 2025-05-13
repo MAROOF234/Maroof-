@@ -1,0 +1,25 @@
+{
+    "users": [
+        {
+            "id": "A001",
+            "username": "admin",
+            "email": "admin@hospital.com",
+            "password": "admin123",
+            "role": "admin"
+        },
+        {
+            "id": "P17466510166269",
+            "username": "Teddy",
+            "email": "56@gmail.com",
+            "password": "teddy04",
+            "role": "patient"
+        },
+        {
+            "id": "D17469757312096",
+            "username": "fit",
+            "email": "fit@gmail.com",
+            "password": "fit04",
+            "role": "doctor"
+        }
+    ]
+}

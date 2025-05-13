@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Hospital Management System</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h3>HMS Admin</h3>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                    <li><a href="doctors.html"><i class="fas fa-user-md"></i> Doctors</a></li>
+                    <li><a href="manage_users.html"><i class="fas fa-users"></i> Users</a></li>
+                    <li><a href="manage_appointment.html"><i class="fas fa-calendar-check"></i> Appointments</a></li>
+                    <li><a href="create_records.html"><i class="fas fa-file-medical"></i> Records</a></li>
+                    <li class="active"><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <header class="dashboard-header">
+                <div class="header-left">
+                    <button id="sidebarToggle" class="btn-icon">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h2>System Settings</h2>
+                </div>
+                <div class="header-right">
+                    <div class="user-info">
+                        <span id="userName">Welcome, Admin</span>
+                        <a href="../logout.php" class="btn-logout">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </div>
+                </div>
+            </header>
+
+            <div class="dashboard-content">
+                <div class="settings-container">
+                    <!-- Hospital Information -->
+                    <div class="settings-section">
+                        <h3><i class="fas fa-hospital"></i> Hospital Information</h3>
+                        <form id="hospitalInfoForm">
+                            <div class="form-group">
+                                <label for="hospitalName">Hospital Name</label>
+                                <input type="text" id="hospitalName" name="hospitalName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="hospitalAddress">Address</label>
+                                <textarea id="hospitalAddress" name="hospitalAddress" rows="3" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="hospitalPhone">Phone Number</label>
+                                <input type="tel" id="hospitalPhone" name="hospitalPhone" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="hospitalEmail">Email</label>
+                                <input type="email" id="hospitalEmail" name="hospitalEmail" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save Hospital Info</button>
+                        </form>
+                    </div>
+
+                    <!-- System Settings -->
+                    <div class="settings-section">
+                        <h3><i class="fas fa-sliders-h"></i> System Settings</h3>
+                        <form id="systemSettingsForm">
+                            <div class="form-group">
+                                <label for="appointmentDuration">Default Appointment Duration (minutes)</label>
+                                <input type="number" id="appointmentDuration" name="appointmentDuration" min="15" step="15" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="workingHours">Working Hours</label>
+                                <div class="time-range">
+                                    <input type="time" id="workingHoursStart" name="workingHoursStart" required>
+                                    <span>to</span>
+                                    <input type="time" id="workingHoursEnd" name="workingHoursEnd" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="maxAppointments">Maximum Appointments per Day</label>
+                                <input type="number" id="maxAppointments" name="maxAppointments" min="1" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save System Settings</button>
+                        </form>
+                    </div>
+
+                    <!-- Notification Settings -->
+                    <div class="settings-section">
+                        <h3><i class="fas fa-bell"></i> Notification Settings</h3>
+                        <form id="notificationSettingsForm">
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="emailNotifications" name="emailNotifications">
+                                    Enable Email Notifications
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="smsNotifications" name="smsNotifications">
+                                    Enable SMS Notifications
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label for="reminderTime">Appointment Reminder Time (hours before)</label>
+                                <input type="number" id="reminderTime" name="reminderTime" min="1" max="24" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save Notification Settings</button>
+                        </form>
+                    </div>
+
+                    <!-- Password Management -->
+                    <div class="settings-section">
+                        <h3><i class="fas fa-lock"></i> Password Management</h3>
+                        <form id="passwordForm">
+                            <div class="form-group">
+                                <label for="currentPassword">Current Password</label>
+                                <input type="password" id="currentPassword" name="currentPassword" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="newPassword">New Password</label>
+                                <input type="password" id="newPassword" name="newPassword" required 
+                                       pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$"
+                                       title="Password must be at least 8 characters long and include both letters and numbers">
+                            </div>
+                            <div class="form-group">
+                                <label for="confirmPassword">Confirm New Password</label>
+                                <input type="password" id="confirmPassword" name="confirmPassword" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Change Password</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/admin.js"></script>
+    <script>
+        // Load settings
+        async function loadSettings() {
+            try {
+                const response = await fetch('get_settings.php');
+                const settings = await response.json();
+                
+                // Populate hospital information
+                document.getElementById('hospitalName').value = settings.hospitalName || '';
+                document.getElementById('hospitalAddress').value = settings.hospitalAddress || '';
+                document.getElementById('hospitalPhone').value = settings.hospitalPhone || '';
+                document.getElementById('hospitalEmail').value = settings.hospitalEmail || '';
+                
+                // Populate system settings
+                document.getElementById('appointmentDuration').value = settings.appointmentDuration || 30;
+                document.getElementById('workingHoursStart').value = settings.workingHoursStart || '09:00';
+                document.getElementById('workingHoursEnd').value = settings.workingHoursEnd || '17:00';
+                document.getElementById('maxAppointments').value = settings.maxAppointments || 20;
+                
+                // Populate notification settings
+                document.getElementById('emailNotifications').checked = settings.emailNotifications || false;
+                document.getElementById('smsNotifications').checked = settings.smsNotifications || false;
+                document.getElementById('reminderTime').value = settings.reminderTime || 24;
+            } catch (error) {
+                console.error('Error loading settings:', error);
+            }
+        }
+
+        // Save settings
+        async function saveSettings(formId) {
+            const form = document.getElementById(formId);
+            const formData = new FormData(form);
+            const settings = Object.fromEntries(formData.entries());
+            
+            try {
+                const response = await fetch('save_settings.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(settings)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('Settings saved successfully!');
+                } else {
+                    alert(data.message || 'Error saving settings');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while saving settings');
+            }
+        }
+
+        // Change password
+        async function changePassword(formData) {
+            try {
+                const response = await fetch('change_password.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(Object.fromEntries(formData))
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('Password changed successfully!');
+                    document.getElementById('passwordForm').reset();
+                } else {
+                    alert(data.message || 'Error changing password');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while changing password');
+            }
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSettings();
+            
+            // Add form submit handlers
+            document.getElementById('hospitalInfoForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                saveSettings('hospitalInfoForm');
+            });
+            
+            document.getElementById('systemSettingsForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                saveSettings('systemSettingsForm');
+            });
+            
+            document.getElementById('notificationSettingsForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                saveSettings('notificationSettingsForm');
+            });
+
+            // Add password form submit handler
+            document.getElementById('passwordForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const form = e.target;
+                const newPassword = form.newPassword.value;
+                const confirmPassword = form.confirmPassword.value;
+
+                if (newPassword !== confirmPassword) {
+                    alert('New passwords do not match!');
+                    return;
+                }
+
+                changePassword(new FormData(form));
+            });
+        });
+    </script>
+</body>
+</html> 

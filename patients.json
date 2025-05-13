@@ -1,0 +1,18 @@
+{
+    "patients": [
+        {
+            "id": "P17466510166269",
+            "username": "Teddy",
+            "email": "56@gmail.com",
+            "password": "teddy04",
+            "role": "patient",
+            "phone": "092 677 2761",
+            "gender": "Male",
+            "age": "18",
+            "blood_group": "A+",
+            "address": "Bole",
+            "medical_history": "",
+            "created_at": "2025-05-07 22:50:16"
+        }
+    ]
+}

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Appointments - Hospital Management System</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h3>HMS Admin</h3>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                    <li><a href="doctors.html"><i class="fas fa-user-md"></i> Doctors</a></li>
+                    <li><a href="manage_users.html"><i class="fas fa-users"></i> Users</a></li>
+                    <li class="active"><a href="manage_appointment.html"><i class="fas fa-calendar-check"></i> Appointments</a></li>
+                    <li><a href="create_records.html"><i class="fas fa-file-medical"></i> Records</a></li>
+                    <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <header class="dashboard-header">
+                <div class="header-left">
+                    <button id="sidebarToggle" class="btn-icon">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h2>Manage Appointments</h2>
+                </div>
+                <div class="header-right">
+                    <div class="user-info">
+                        <span id="userName">Welcome, Admin</span>
+                        <a href="../logout.php" class="btn-logout">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </div>
+                </div>
+            </header>
+
+            <div class="dashboard-content">
+                <div class="content-header">
+                    <h3>Appointments List</h3>
+                    <button class="btn btn-primary" onclick="showAddAppointmentModal()">
+                        <i class="fas fa-plus"></i> Add New Appointment
+                    </button>
+                </div>
+
+                <div class="filters">
+                    <div class="form-group">
+                        <label for="dateFilter">Date</label>
+                        <input type="date" id="dateFilter" onchange="filterAppointments()">
+                    </div>
+                    <div class="form-group">
+                        <label for="doctorFilter">Doctor</label>
+                        <select id="doctorFilter" onchange="filterAppointments()">
+                            <option value="">All Doctors</option>
+                            <!-- Will be populated dynamically -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="statusFilter">Status</label>
+                        <select id="statusFilter" onchange="filterAppointments()">
+                            <option value="">All Status</option>
+                            <option value="scheduled">Scheduled</option>
+                            <option value="completed">Completed</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Patient Name</th>
+                                <th>Doctor</th>
+                                <th>Date & Time</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="appointmentsList">
+                            <!-- Will be populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Appointment Modal -->
+    <div id="addAppointmentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Appointment</h3>
+                <button class="close-modal" onclick="closeAddAppointmentModal()">&times;</button>
+            </div>
+            <form id="addAppointmentForm">
+                <div class="form-group">
+                    <label for="patientId">Patient</label>
+                    <select id="patientId" name="patientId" required>
+                        <option value="">Select Patient</option>
+                        <!-- Will be populated dynamically -->
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="doctorId">Doctor</label>
+                    <select id="doctorId" name="doctorId" required>
+                        <option value="">Select Doctor</option>
+                        <!-- Will be populated dynamically -->
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="appointmentDate">Date</label>
+                    <input type="date" id="appointmentDate" name="appointmentDate" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="appointmentTime">Time</label>
+                    <input type="time" id="appointmentTime" name="appointmentTime" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="reason">Reason for Visit</label>
+                    <textarea id="reason" name="reason" rows="3" required></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Save Appointment
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="closeAddAppointmentModal()">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/admin.js"></script>
+    <script>
+        // Load appointments
+        async function loadAppointments() {
+            try {
+                const response = await fetch('get_appointments.php');
+                const appointments = await response.json();
+                
+                const appointmentsList = document.getElementById('appointmentsList');
+                appointmentsList.innerHTML = '';
+                
+                appointments.forEach(appointment => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${appointment.patientName}</td>
+                        <td>${appointment.doctorName}</td>
+                        <td>${appointment.date} ${appointment.time}</td>
+                        <td><span class="status-badge ${appointment.status}">${appointment.status}</span></td>
+                        <td class="actions">
+                            <button class="btn-icon" onclick="editAppointment('${appointment.id}')" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn-icon text-danger" onclick="deleteAppointment('${appointment.id}')" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    `;
+                    appointmentsList.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error loading appointments:', error);
+            }
+        }
+
+        // Load doctors and patients for dropdowns
+        async function loadDropdowns() {
+            try {
+                const [doctorsResponse, patientsResponse] = await Promise.all([
+                    fetch('get_doctor.php'),
+                    fetch('get_patients.php')
+                ]);
+                
+                const doctors = await doctorsResponse.json();
+                const patients = await patientsResponse.json();
+                
+                // Populate doctor dropdowns
+                const doctorSelects = document.querySelectorAll('#doctorFilter, #doctorId');
+                doctorSelects.forEach(select => {
+                    doctors.forEach(doctor => {
+                        const option = document.createElement('option');
+                        option.value = doctor.id;
+                        option.textContent = `${doctor.fullName} - ${doctor.specialization}`;
+                        select.appendChild(option);
+                    });
+                });
+                
+                // Populate patient dropdown
+                const patientSelect = document.getElementById('patientId');
+                patients.forEach(patient => {
+                    const option = document.createElement('option');
+                    option.value = patient.id;
+                    option.textContent = patient.fullName;
+                    patientSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error loading dropdowns:', error);
+            }
+        }
+
+        // Filter appointments
+        function filterAppointments() {
+            const date = document.getElementById('dateFilter').value;
+            const doctor = document.getElementById('doctorFilter').value;
+            const status = document.getElementById('statusFilter').value;
+            
+            // Implement filtering logic here
+            loadAppointments(); // For now, just reload all appointments
+        }
+
+        // Show add appointment modal
+        function showAddAppointmentModal() {
+            document.getElementById('addAppointmentModal').style.display = 'block';
+        }
+
+        // Close add appointment modal
+        function closeAddAppointmentModal() {
+            document.getElementById('addAppointmentModal').style.display = 'none';
+        }
+
+        // Handle add appointment form submission
+        document.getElementById('addAppointmentForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const appointmentData = Object.fromEntries(formData.entries());
+            
+            try {
+                const response = await fetch('add_appointment.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(appointmentData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('Appointment added successfully!');
+                    closeAddAppointmentModal();
+                    loadAppointments();
+                } else {
+                    alert(data.message || 'Error adding appointment');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while adding the appointment');
+            }
+        });
+
+        // Delete appointment
+        async function deleteAppointment(id) {
+            if (confirm('Are you sure you want to delete this appointment?')) {
+                try {
+                    const response = await fetch('delete_appointment.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ id })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        alert('Appointment deleted successfully!');
+                        loadAppointments();
+                    } else {
+                        alert(data.message || 'Error deleting appointment');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('An error occurred while deleting the appointment');
+                }
+            }
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', () => {
+            loadAppointments();
+            loadDropdowns();
+        });
+    </script>
+</body>
+</html> 

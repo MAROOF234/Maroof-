@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Records - Hospital Management System</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h3>HMS Admin</h3>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                    <li><a href="doctors.html"><i class="fas fa-user-md"></i> Doctors</a></li>
+                    <li><a href="manage_users.html"><i class="fas fa-users"></i> Users</a></li>
+                    <li><a href="manage_appointment.html"><i class="fas fa-calendar-check"></i> Appointments</a></li>
+                    <li class="active"><a href="create_records.html"><i class="fas fa-file-medical"></i> Records</a></li>
+                    <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <header class="dashboard-header">
+                <div class="header-left">
+                    <button id="sidebarToggle" class="btn-icon">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h2>Create Patient Records</h2>
+                </div>
+                <div class="header-right">
+                    <div class="user-info">
+                        <span id="userName">Welcome, Admin</span>
+                        <a href="../logout.php" class="btn-logout">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </div>
+                </div>
+            </header>
+
+            <div class="dashboard-content">
+                <div class="content-header">
+                    <h3>New Patient Record</h3>
+                    <a href="view_record.html" class="btn btn-secondary">
+                        <i class="fas fa-list"></i> View All Records
+                    </a>
+                </div>
+
+                <form id="createRecordForm" class="form">
+                    <div class="form-group">
+                        <label for="patientId">Patient ID</label>
+                        <input type="text" id="patientId" name="patientId" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="patientName">Patient Name</label>
+                        <input type="text" id="patientName" name="patientName" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="doctorId">Doctor</label>
+                        <select id="doctorId" name="doctorId" required>
+                            <option value="">Select Doctor</option>
+                            <!-- Will be populated dynamically -->
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="diagnosis">Diagnosis</label>
+                        <textarea id="diagnosis" name="diagnosis" rows="3" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="treatment">Treatment</label>
+                        <textarea id="treatment" name="treatment" rows="3" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="medications">Medications</label>
+                        <textarea id="medications" name="medications" rows="3" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notes">Additional Notes</label>
+                        <textarea id="notes" name="notes" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Save Record
+                        </button>
+                        <a href="view_record.html" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/admin.js"></script>
+    <script>
+        // Load doctors for dropdown
+        async function loadDoctors() {
+            try {
+                const response = await fetch('get_doctor.php');
+                const doctors = await response.json();
+                
+                const doctorSelect = document.getElementById('doctorId');
+                doctors.forEach(doctor => {
+                    const option = document.createElement('option');
+                    option.value = doctor.id;
+                    option.textContent = `${doctor.fullName} - ${doctor.specialization}`;
+                    doctorSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error loading doctors:', error);
+            }
+        }
+
+        // Handle form submission
+        document.getElementById('createRecordForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const recordData = Object.fromEntries(formData.entries());
+            
+            try {
+                const response = await fetch('create_record.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(recordData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('Record created successfully!');
+                    window.location.href = 'view_record.html';
+                } else {
+                    alert(data.message || 'Error creating record');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while creating the record');
+            }
+        });
+
+        // Load doctors when page loads
+        document.addEventListener('DOMContentLoaded', loadDoctors);
+    </script>
+</body>
+</html> 
